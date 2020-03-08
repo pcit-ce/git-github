@@ -14,8 +14,9 @@ class Issues
 
     /**
      *  "assigned", "unassigned",
-     *  "labeled",  "unlabeled",
-     *  "opened",   "edited", "closed" or "reopened"
+     *  "labeled", "unlabeled",
+     *  "opened", "closed" or "reopened"
+     *  "edited"
      *  "milestoned", "demilestoned".
      *
      * @param $json_content
@@ -71,7 +72,7 @@ class Issues
             ->register(new UpdateUserInfo($account, (int) $installation_id, (int) $rid, $repo_full_name))
             ->handle();
 
-        \Log::info(__FILE__, __LINE__, $issue_number.' opened', []);
+        \Log::info($issue_number.' opened', []);
 
         return;
     }
