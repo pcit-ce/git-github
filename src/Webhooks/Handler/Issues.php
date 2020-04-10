@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace PCIT\GitHub\Webhooks\Handler;
 
 use App\GetAccessToken;
-use App\Issue;
+use App\Repo;
 use PCIT\PCIT;
 
 class Issues
 {
-    private static $cache_key_github_issue = 'github_issue';
-
     /**
      *  "assigned", "unassigned",
      *  "labeled", "unlabeled",
@@ -47,26 +45,11 @@ class Issues
             'account' => $account,
         ] = \PCIT\GitHub\Webhooks\Parser\Issues::handle($json_content);
 
-        $assignees && Issue::updateAssignees($assignees, 'github', $issue_id);
-
-        $labels && Issue::updateLabels($labels, 'github', $issue_id);
-
-        if (\in_array($action, ['opened', 'edited', 'closed' or 'reopened'], true)) {
-            Issue::insert(
-                $rid, $issue_id, $issue_number, $action, $title, $body,
-                $sender_username, $sender_uid, $sender_pic,
-                $state, (int) $locked,
-                $created_at, $closed_at, $updated_at, 'github'
-            );
-        }
-
         if ('opened' !== $action) {
             return;
         }
 
         self::translateTitle($repo_full_name, (int) $issue_number, (int) $rid, $title);
-
-        // self::createComment($rid, $repo_full_name, $issue_number, $body);
 
         (new Subject())
             ->register(new UpdateUserInfo($account, (int) $installation_id, (int) $rid, $repo_full_name))
@@ -78,9 +61,7 @@ class Issues
     }
 
     /**
-     * 检查标题是否为中文.
-     *
-     * 若为中文则翻译为英文
+     * 检查标题是否为中文，若为中文则翻译为英文.
      *
      * @param $title
      * @param $rid
@@ -116,6 +97,8 @@ class Issues
                 $title = $result['data']['trans_text'] ?? null;
             }
         } catch (\Throwable $e) {
+            \Log::info($e->__toString());
+
             return;
         }
 
@@ -161,24 +144,39 @@ class Issues
         }
 
         if ('deleted' === $action) {
-            $result = Issue::comment_deleted($issue_id, $comment_id, $updated_at);
-
-            if (1 === $result) {
-                $debug_info = 'Delete Issue Comment SUCCESS';
-
-                \Log::info($debug_info, []);
-            }
-
             return;
         }
 
-        $last_insert_id = Issue::insertComment($rid, $issue_id, $comment_id, $issue_number, $body, $sender_uid, $created_at);
+        if (Repo::checkAdmin((int) $rid, (int) $sender_uid)) {
+            $pustomize_class = 'PCIT\\Pustomize\\PullRequest\\AutoMerge';
 
-        \Cache::store()->lPush(self::$cache_key_github_issue, $last_insert_id);
+            if (!class_exists($pustomize_class)) {
+                return;
+            }
 
-        // self::createComment($rid, $repo_full_name, $issue_number, $body);
+            $result = (new $pustomize_class())->handle($body);
 
-        // \Log::info('Create AI Bot Issue Comment', []);
+            if (!$result) {
+                return;
+            }
+
+            [$body,$merge_method] = $result;
+
+            try {
+                PullRequest::merge(
+                    $repo_full_name, (int) $issue_number, null, null, null,
+                    $merge_method ?? 1
+                );
+
+                self::createComment((int) $rid, $repo_full_name, $issue_number, $body);
+            } catch (\Throwable $e) {
+                \Log::error('auto merge error: '.$e->__toString());
+
+                self::createComment((int) $rid, $repo_full_name, $issue_number,
+                    ':disappointed_relieved: merge cannot be performed, please check status below'
+                );
+            }
+        }
     }
 
     /**
