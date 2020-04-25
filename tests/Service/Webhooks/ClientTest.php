@@ -35,12 +35,13 @@ class ClientTest extends TestCase
 
         $request_body = file_get_contents(__DIR__.'/../../webhooks/github/'.$event.'.json');
 
-        $secret = hash_hmac($algo, $request_body, 'pcit');
+        $secret = hash_hmac($algo, $request_body, env('CI_WEBHOOKS_TOKEN'));
 
         $request = Request::create('/', 'POST', [], [], [],
             [
                 'HTTP_X-Github-Event' => $event,
                 'HTTP_X-Hub-Signature' => 'sha1='.$secret,
+                'REQUEST_TIME_FLOAT' => microtime(true),
             ],
             $request_body
         );
