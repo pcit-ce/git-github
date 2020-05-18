@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace PCIT\GitHub\Service\Repositories;
 
-use PCIT\GitHub\Service\CICommon;
+use Exception;
+use PCIT\GPI\Service\Repositories\ContentsClientInterface;
+use PCIT\GPI\ServiceClientCommon;
 
-class ContentsClient
+class ContentsClient implements ContentsClientInterface
 {
-    use CICommon;
+    use ServiceClientCommon;
 
     /**
      * Get the README.
@@ -27,13 +29,24 @@ class ContentsClient
     /**
      * Get contents.
      *
-     * @return $this
-     *
      * @throws \Exception
      */
-    public function getContents(string $repo_full_name, string $path, string $ref)
+    public function getContents(string $repo_full_name, string $path, string $ref, bool $raw = true): string
     {
-        return $this->curl->get($this->api_url.'/repos/'.$repo_full_name.'/contents/'.$path.'?'.http_build_query(['ref' => $ref]));
+        $headers = [];
+        if ($raw) {
+            $headers = [
+                'Accept' => 'application/vnd.github.3.raw',
+            ];
+        }
+
+        $result = $this->curl->get($this->api_url.'/repos/'.$repo_full_name.'/contents/'.$path.'?'.http_build_query(['ref' => $ref]), null, $headers);
+
+        if (200 !== $this->curl->getCode()) {
+            throw new Exception('http code is not 200');
+        }
+
+        return $result;
     }
 
     /**
