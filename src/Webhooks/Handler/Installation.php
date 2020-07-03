@@ -12,7 +12,7 @@ class Installation
     public $git_type = 'github';
 
     /**
-     * created 用户点击安装按钮.
+     * created 用户点击安装按钮(首次).
      *
      * deleted 用户卸载了 GitHub Apps
      *
@@ -35,7 +35,7 @@ class Installation
         }
 
         if ('deleted' === $action) {
-            $this->delete($installation_id, $account->username);
+            $this->delete($installation_id, $account->login);
 
             return;
         }
@@ -52,9 +52,9 @@ class Installation
      *
      * @throws \Exception
      */
-    public function create(array $repo, int $sender_uid): void
+    public function create(array $repositories, int $sender_uid): void
     {
-        foreach ($repo as $k) {
+        foreach ($repositories as $k) {
             // 仓库信息存入 repo 表
             $rid = $k->id;
 
