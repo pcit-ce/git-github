@@ -28,11 +28,11 @@ class InstallationRepositories
         $action = $context->action;
         $repo = $context->repo;
         $sender = $context->sender;
-        $owner = $context->owner;
+        $account = $context->account;
 
         User::updateUserInfo((int) $sender->uid, null, $sender->username, null, $sender->pic);
-        User::updateUserInfo($owner);
-        User::updateInstallationId((int) $installation_id, $owner->username);
+        User::updateUserInfo($account);
+        User::updateInstallationId((int) $installation_id, $account->login);
 
         if ('added' === $action) {
             $this->added($repo, $sender->uid);

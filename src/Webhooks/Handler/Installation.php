@@ -26,7 +26,7 @@ class Installation
         $action = $context->action;
         $repositories = $context->repositories;
         $sender = $context->sender;
-        $owner = $context->owner;
+        $account = $context->account;
 
         if ('new_permissions_accepted' === $action) {
             \Log::info('receive event [ installation ] action [ new_permissions_accepted ]');
@@ -35,15 +35,15 @@ class Installation
         }
 
         if ('deleted' === $action) {
-            $this->delete($installation_id, $owner->username);
+            $this->delete($installation_id, $account->username);
 
             return;
         }
 
         // 仓库管理员信息
         User::updateUserInfo((int) $sender->uid, null, $sender->username, null, $sender->pic);
-        User::updateUserInfo($owner);
-        User::updateInstallationId((int) $installation_id, $owner->username);
+        User::updateUserInfo($account);
+        User::updateInstallationId((int) $installation_id, $account->login);
         $this->create($repositories, $sender->uid);
     }
 
