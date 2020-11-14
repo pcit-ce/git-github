@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace PCIT\GitHub\Tests\Service\Webhooks;
 
-use PCIT\Framework\Http\Request;
 use PCIT\PCIT;
 use Tests\TestCase;
 
@@ -15,9 +14,6 @@ class ClientTest extends TestCase
      */
     public $pcit;
 
-    /**
-     * @throws \Exception
-     */
     public function setUp(): void
     {
         $this->pcit = app('pcit');
@@ -26,8 +22,6 @@ class ClientTest extends TestCase
 
     /**
      * @param $event
-     *
-     * @throws \Exception
      */
     public function common($event): void
     {
@@ -35,9 +29,14 @@ class ClientTest extends TestCase
 
         $request_body = file_get_contents(__DIR__.'/../../webhooks/github/'.$event.'.json');
 
-        $secret = hash_hmac($algo, $request_body, env('CI_WEBHOOKS_TOKEN'));
+        $secret = hash_hmac($algo, $request_body, config('git.webhooks.token'));
 
-        $request = Request::create('/', 'POST', [], [], [],
+        $response = $this->request(
+            '/',
+            'POST',
+            [],
+            [],
+            [],
             [
                 'HTTP_X-Github-Event' => $event,
                 'HTTP_X-Hub-Signature' => 'sha1='.$secret,
@@ -46,18 +45,9 @@ class ClientTest extends TestCase
             $request_body
         );
 
-        $request->overrideGlobals();
-
-        $this->app->singleton('request', $request);
-
-        $result = $this->pcit->webhooks->server();
-
-        $this->assertStringMatchesFormat('%s', (string) $result);
+        $this->assertStringMatchesFormat('%s', (string) $response->getContent());
     }
 
-    /**
-     * @throws \Exception
-     */
     public function testPush(): void
     {
         $event = 'push';

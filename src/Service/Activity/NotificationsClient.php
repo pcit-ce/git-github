@@ -14,8 +14,6 @@ class NotificationsClient
      * List your notifications.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(bool $all, bool $participating, string $since, string $before)
     {
@@ -33,8 +31,6 @@ class NotificationsClient
      * List your notifications in a repository.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function repository(string $repo_full_name, bool $all, bool $participating, string $since, string $before)
     {
@@ -56,8 +52,6 @@ class NotificationsClient
      * @param string $last_read_at ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function markAsRead(string $last_read_at)
     {
@@ -70,8 +64,6 @@ class NotificationsClient
      * @param string $last_read_at ISO 8601 format: YYYY-MM-DDTHH:MM:SSZ
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function markAsReadInRepository(string $repo_full_name, string $last_read_at)
     {
@@ -82,8 +74,6 @@ class NotificationsClient
      * View a single thread.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function viewSingleThread(int $thread_id)
     {
@@ -96,8 +86,6 @@ class NotificationsClient
      * 205
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function markThreadAsRead(int $thread_id)
     {
@@ -108,8 +96,6 @@ class NotificationsClient
      * Get a thread subscription.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getThreadSubscription(int $thread_id)
     {
@@ -120,8 +106,6 @@ class NotificationsClient
      * Set a thread subscription.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function setThreadSubscription(int $thread_id, bool $ignored = false)
     {
@@ -134,8 +118,6 @@ class NotificationsClient
      * 204
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function deleteThreadSubscription(int $thread_id)
     {

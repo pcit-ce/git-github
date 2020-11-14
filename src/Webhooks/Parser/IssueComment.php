@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace PCIT\GitHub\Webhooks\Parser;
 
 use PCIT\Framework\Support\Date;
-use PCIT\GPI\Webhooks\Context\Components\Repository;
 use PCIT\GPI\Webhooks\Context\IssueCommentContext;
-use PCIT\GPI\Webhooks\Parser\UserBasicInfo\Owner;
 
 class IssueComment
 {
@@ -17,12 +15,12 @@ class IssueComment
 
     public static function handle(string $webhooks_content): IssueCommentContext
     {
+        $issueCommentContext = new IssueCommentContext([], $webhooks_content);
         \Log::info('Receive issue comment event', []);
 
         $obj = json_decode($webhooks_content);
 
-        $action = $obj->action;
-        $comment = $obj->comment;
+        $comment = $issueCommentContext->comment;
 
         $sender = $comment->user;
         $sender_username = $sender->login;
@@ -47,12 +45,6 @@ class IssueComment
         $created_at = Date::parse($comment->created_at);
         $updated_at = Date::parse($comment->updated_at);
 
-        $repository = new Repository($obj->repository);
-        $org = ($obj->organization ?? false) ? true : false;
-        $repository->owner = new Owner($repository->owner, $org);
-
-        $installation_id = $obj->installation->id ?? null;
-
         $is_pull_request = ($issue->pull_request ?? false) ? true : false;
 
         // gitee
@@ -60,11 +52,8 @@ class IssueComment
             $is_pull_request = true;
         }
 
-        $issueCommentContext = new IssueCommentContext([], $webhooks_content);
+        $repository = $issueCommentContext->repository;
 
-        $issueCommentContext->installation_id = $installation_id;
-        $issueCommentContext->rid = $repository->id;
-        $issueCommentContext->repo_full_name = $repository->full_name;
         $issueCommentContext->sender_username = $sender_username;
         $issueCommentContext->sender_uid = $sender_uid;
         $issueCommentContext->sender_pic = $sender_pic;
@@ -74,8 +63,6 @@ class IssueComment
         $issueCommentContext->body = $body;
         $issueCommentContext->created_at = $created_at;
         $issueCommentContext->updated_at = $updated_at;
-        $issueCommentContext->owner = $repository->owner;
-        $issueCommentContext->action = $action;
         $issueCommentContext->is_pull_request = $is_pull_request;
 
         return $issueCommentContext;

@@ -17,8 +17,6 @@ class ContentsClient implements ContentsClientInterface
      *
      * @return mixed
      *
-     * @throws \Exception
-     *
      * @aee https://developer.github.com/v3/repos/contents/#get-the-readme
      */
     public function getReadme(string $repo_full_name, string $ref)
@@ -28,8 +26,6 @@ class ContentsClient implements ContentsClientInterface
 
     /**
      * Get contents.
-     *
-     * @throws \Exception
      */
     public function getContents(string $repo_full_name, string $path, string $ref, bool $raw = true): string
     {
@@ -57,17 +53,16 @@ class ContentsClient implements ContentsClientInterface
      * @param string $committer_email
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function createFile(string $repo_full_name,
-                               string $path,
-                               string $commit_message,
-                               string $content,
-                               ?string $branch,
-                               ?string $committer_name,
-                               ?string $committer_email)
-    {
+    public function createFile(
+        string $repo_full_name,
+        string $path,
+        string $commit_message,
+        string $content,
+        ?string $branch,
+        ?string $committer_name,
+        ?string $committer_email
+    ) {
         $data = [
             'message' => $commit_message,
             'content' => $content,
@@ -75,7 +70,9 @@ class ContentsClient implements ContentsClientInterface
         ];
 
         if ($committer_name) {
-            $data = array_merge($data, ['committer' => [
+            $data = array_merge(
+                $data,
+                ['committer' => [
                     'name' => $committer_name,
                     'email' => $committer_email,
                 ],
@@ -96,18 +93,17 @@ class ContentsClient implements ContentsClientInterface
      * @param string $committer_email
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function updateFile(string $repo_full_name,
-                               string $path,
-                               string $commit_message,
-                               string $content,
-                               string $sha,
-                               ?string $branch,
-                               ?string $committer_name,
-                               ?string $committer_email)
-    {
+    public function updateFile(
+        string $repo_full_name,
+        string $path,
+        string $commit_message,
+        string $content,
+        string $sha,
+        ?string $branch,
+        ?string $committer_name,
+        ?string $committer_email
+    ) {
         $data = [
             'message' => $commit_message,
             'content' => $content,
@@ -116,7 +112,9 @@ class ContentsClient implements ContentsClientInterface
         ];
 
         if ($committer_name) {
-            $data = array_merge($data, ['committer' => [
+            $data = array_merge(
+                $data,
+                ['committer' => [
                     'name' => $committer_name,
                     'email' => $committer_email,
                 ],
@@ -135,17 +133,16 @@ class ContentsClient implements ContentsClientInterface
      * @param string $branch
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function deleteFile(string $repo_full_name,
-                               string $path,
-                               string $commit_message,
-                               string $sha,
-                               ?string $branch,
-                               string $committer_name,
-                               string $committer_email)
-    {
+    public function deleteFile(
+        string $repo_full_name,
+        string $path,
+        string $commit_message,
+        string $sha,
+        ?string $branch,
+        string $committer_name,
+        string $committer_email
+    ) {
         $data = [
             'message' => $commit_message,
             'sha' => $sha,
@@ -153,7 +150,9 @@ class ContentsClient implements ContentsClientInterface
         ];
 
         if ($committer_name) {
-            $data = array_merge($data, ['committer' => [
+            $data = array_merge(
+                $data,
+                ['committer' => [
                     'name' => $committer_name,
                     'email' => $committer_email,
                 ],
@@ -172,8 +171,6 @@ class ContentsClient implements ContentsClientInterface
      * @param string $archive_format tarball or zipball
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getArchiveLink(string $repo_full_name, string $ref, string $archive_format = 'tarball')
     {

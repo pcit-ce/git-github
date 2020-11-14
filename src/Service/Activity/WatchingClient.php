@@ -14,8 +14,6 @@ class WatchingClient
      * List watchers.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(string $repo_full_name)
     {
@@ -26,8 +24,6 @@ class WatchingClient
      * List repositories being watched.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listRepositoryBeingWatched(string $username = null)
     {
@@ -44,8 +40,6 @@ class WatchingClient
      * 检查是否 watching repo
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getRepositorySubscription(string $repo_full_name)
     {
@@ -56,12 +50,12 @@ class WatchingClient
      * Set a Repository Subscription.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function setRepositorySubscription(string $repo_full_name, bool $subscribed, bool $ignored)
     {
-        return $this->curl->put($this->api_url.'/repos/'.$repo_full_name.'/subscription?'.http_build_query([
+        return $this->curl->put(
+            $this->api_url.'/repos/'.$repo_full_name.'/subscription?'.http_build_query(
+                [
                     'subscribed' => $subscribed,
                     'ignored' => $ignored,
                 ]
@@ -73,8 +67,6 @@ class WatchingClient
      * Delete a Repository Subscription.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function deleteRepositorySubscription(string $repo_full_name): void
     {

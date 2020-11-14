@@ -6,6 +6,7 @@ namespace PCIT\GitHub\Service\OAuth;
 
 use Curl\Curl;
 use Exception;
+use PCIT\GPI\Service\OAuth\OAuthInterface;
 
 class Client implements OAuthInterface
 {
@@ -40,15 +41,16 @@ class Client implements OAuthInterface
             'repo_deployment',
             'public_repo',
             'repo:invite',
+            'security_events',
+            // 'admin:repo_hook',
+            // 'write:repo_hook',
+            'read:repo_hook',
             'admin:org',
             'write:org',
             'read:org',
             'admin:public_key',
             'write:public_key',
             'read:public_key',
-            'admin:repo_hook',
-            'write:repo_hook',
-            'read:repo_hook',
             'admin:org_hook',
             'gist',
             'notifications',
@@ -56,11 +58,16 @@ class Client implements OAuthInterface
             'read:user',
             'user:email',
             'user:follow',
-            'delete_repo',
+            // 'delete_repo',
             'write:discussion',
+            'read:discussion',
+            'write:packages',
+            'read:packages',
+            // 'delete:packages',
             'admin:gpg_key',
             'write:gpg_key',
             'read:gpg_key',
+            'workflow',
         ];
 
         $this->scope = $config['scope'] ?? implode(',', $all_scope);
@@ -69,34 +76,66 @@ class Client implements OAuthInterface
 
     public function getLoginUrl(?string $state): string
     {
+        if (!($this->clientId and $this->clientSecret and $this->callbackUrl)) {
+            return '';
+        }
+
         $url = static::URL.http_build_query([
-                'client_id' => $this->clientId,
-                'redirect_uri' => $this->callbackUrl,
-                'scope' => $this->scope,
-                'state' => $state,
-                'allow_signup' => 'true',
-            ]);
+            'client_id' => $this->clientId,
+            'redirect_uri' => $this->callbackUrl,
+            //'scope' => $this->scope,
+            'state' => $state,
+            //'allow_signup' => 'true',
+        ]);
 
         return $url;
     }
 
     /**
-     * @throws \Exception
+     * @return array<string>|string
      */
-    public function getAccessToken(string $code, ?string $state, bool $json = true): array
+    public function getAccessTokenByRefreshToken(string $refresh_token, bool $raw = false)
     {
-        $url = static::POST_URL.http_build_query([
-                    'client_id' => $this->clientId,
-                    'client_secret' => $this->clientSecret,
-                    'code' => $code,
-                    'redirect_uri' => $this->callbackUrl,
-                    'state' => $state,
-                ]
-            );
+        $url = static::POST_URL.http_build_query(
+            [
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+                'grant_type' => 'refresh_token',
+                'refresh_token' => $refresh_token,
+            ]
+        );
 
-        true === $json && $this->curl->setHeader('Accept', 'application/json');
+        return $this->requestAccessToken($url, $raw);
+    }
 
-        true !== $json && $this->curl->setHeader('Accept', 'application/xml');
+    /**
+     * expires_in 8 hours.
+     *
+     * @return array<string>|string
+     */
+    public function getAccessToken(string $code, ?string $state, bool $raw = false)
+    {
+        $url = static::POST_URL.http_build_query(
+            [
+                'client_id' => $this->clientId,
+                'client_secret' => $this->clientSecret,
+                'code' => $code,
+                'redirect_uri' => $this->callbackUrl,
+                'state' => $state,
+            ]
+        );
+
+        return $this->requestAccessToken($url, $raw);
+    }
+
+    /**
+     * @return array<string>|string
+     */
+    public function requestAccessToken(string $url, bool $raw = false)
+    {
+        $this->curl->setHeader('Accept', 'application/json');
+
+        //$this->curl->setHeader('Accept', 'application/xml');
 
         $accessToken = $this->curl->post($url);
 
@@ -104,10 +143,17 @@ class Client implements OAuthInterface
 
         // {"access_token":"47bb","token_type":"bearer","scope":"admin:gpg_key,admin:org"}
 
-        true === $json && $accessToken = json_decode($accessToken)->access_token ?? false;
+        if (true === $raw) {
+            return $accessToken;
+        }
+
+        $result_obj = json_decode($accessToken);
+        $accessToken = $result_obj->access_token ?? false;
+        // expires_in 6 months.
+        $refresh_token = $result_obj->refresh_token ?? false;
 
         if ($accessToken) {
-            return [$accessToken, ''];
+            return [$accessToken, $refresh_token];
         }
 
         throw new Exception('access_token not fount');

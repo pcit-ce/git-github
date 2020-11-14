@@ -18,8 +18,6 @@ class Server extends ServerAbstract
 
     /**
      * @return int
-     *
-     * @throws \Exception
      */
     public function server()
     {

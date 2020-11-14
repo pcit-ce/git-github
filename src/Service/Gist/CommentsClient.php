@@ -15,8 +15,6 @@ class CommentsClient
      *
      * @return mixed
      *
-     * @throws \Exception
-     *
      * @see https://developer.github.com/v3/gists/comments/#list-comments-on-a-gist
      */
     public function list(string $gist_id)
@@ -28,8 +26,6 @@ class CommentsClient
      * Get a single comment.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function get(string $gist_id, int $comment_id)
     {
@@ -42,8 +38,6 @@ class CommentsClient
      * 201
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function create(string $gist_id, string $body, string $method = 'post')
     {
@@ -54,8 +48,6 @@ class CommentsClient
      * Edit a comment.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function edit(string $gist_id, string $body)
     {
@@ -68,8 +60,6 @@ class CommentsClient
      * 204
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function delete(string $gist_id, int $comment_id)
     {

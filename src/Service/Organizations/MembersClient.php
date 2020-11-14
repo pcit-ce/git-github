@@ -18,23 +18,19 @@ class MembersClient
      * @param string $role     admin or member or all
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(string $org_name, string $filter = 'all', string $role = 'all')
     {
         return $this->curl->get($this->api_url.'/orgs/'.$org_name.'/members?'.http_build_query([
-                'filter' => $filter,
-                'role' => $role,
-            ]));
+            'filter' => $filter,
+            'role' => $role,
+        ]));
     }
 
     /**
      * Check membership.
      *
      * @return bool
-     *
-     * @throws \Exception
      */
     public function checkMembership(string $org_name, string $username)
     {
@@ -53,8 +49,6 @@ class MembersClient
      * Remove a member.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function remove(string $org_name, string $username): void
     {
@@ -63,8 +57,6 @@ class MembersClient
 
     /**
      * Public members list.
-     *
-     * @throws \Exception
      */
     public function listPublic(string $org_name): void
     {
@@ -77,8 +69,6 @@ class MembersClient
      * 204
      *
      * @return bool
-     *
-     * @throws \Exception
      */
     public function checkPublicMembership(string $org_name, string $username)
     {
@@ -97,8 +87,6 @@ class MembersClient
      * Publicize a user's membership.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function publicizeUserMembership(string $org_name, string $username): void
     {
@@ -107,8 +95,6 @@ class MembersClient
 
     /**
      * Conceal a user's membership.
-     *
-     * @throws \Exception
      */
     public function concealUserMembership(string $org_name, string $username): void
     {
@@ -119,8 +105,6 @@ class MembersClient
      * Get organization membership.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getMembership(string $org_name, string $username)
     {
@@ -132,22 +116,18 @@ class MembersClient
      *
      * @param string $username username
      * @param string $role     admin or member
-     *
-     * @throws \Exception
      */
     public function updateMembership(string $org_name, string $username, string $role = 'member'): void
     {
         $this->curl->put($this->api_url.'/orgs/'.$org_name.'/memberships/'.$username.'?'.http_build_query([
-                'role' => $role,
-            ]));
+            'role' => $role,
+        ]));
     }
 
     /**
      * Remove organization membership.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function removeMembership(string $org_name, string $username): void
     {
@@ -158,8 +138,6 @@ class MembersClient
      * List organization invitation teams.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listInvitationTeams(string $org_name, string $invitation_id)
     {
@@ -170,8 +148,6 @@ class MembersClient
      * List pending organization invitations.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listPendingInvitations(string $org_name)
     {
@@ -183,19 +159,18 @@ class MembersClient
      *
      * 201
      *
-     * @param int|null $invitee_id GotHub user id
+     * @param null|int $invitee_id GotHub user id
      * @param string   $email
      * @param string   $role       admin or direct_member billing_manager
      * @param array    $team_ids
-     *
-     * @throws \Exception
      */
-    public function createInvitation(string $org_name,
-                                     ?int $invitee_id,
-                                     ?string $email,
-                                     string $role = 'direct_member',
-                                     array $team_ids = null): void
-    {
+    public function createInvitation(
+        string $org_name,
+        ?int $invitee_id,
+        ?string $email,
+        string $role = 'direct_member',
+        array $team_ids = null
+    ): void {
         $data = [
             'invitee_id' => $invitee_id,
             'email' => $email,
@@ -212,21 +187,18 @@ class MembersClient
      * @param string $state active or pending
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listYourMemberships(string $state = null)
     {
-        return $this->curl->get($this->api_url.'/user/memberships/orgs?'.http_build_query([
-                    'state' => $state,
-                ]
-            ));
+        return $this->curl->get($this->api_url.'/user/memberships/orgs?'.http_build_query(
+            [
+                'state' => $state,
+            ]
+        ));
     }
 
     /**
      * Get your organization membership.
-     *
-     * @throws \Exception
      */
     public function getYourMembership(string $org_name): void
     {
@@ -235,8 +207,6 @@ class MembersClient
 
     /**
      * Edit your organization membership.
-     *
-     * @throws \Exception
      */
     public function editYourMembership(string $org_name): void
     {
@@ -250,23 +220,20 @@ class MembersClient
      *
      * @param string $org_name org name
      * @param string $filter   all or 2fa_disabled
-     *
-     * @throws \Exception
      */
     public function listOutsideCollaborators(string $org_name, string $filter = 'all'): void
     {
-        $this->curl->get($this->api_url.'/orgs/'.$org_name.'/outside_collaborators?'.http_build_query([
-                    'filter' => $filter,
-                ]
-            ));
+        $this->curl->get($this->api_url.'/orgs/'.$org_name.'/outside_collaborators?'.http_build_query(
+            [
+                'filter' => $filter,
+            ]
+        ));
     }
 
     /**
      * Remove outside collaborator.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function removeOutsideCollaborators(string $org_name, string $username): void
     {
@@ -277,8 +244,6 @@ class MembersClient
      * Convert member to outside collaborator.
      *
      * 204
-     *
-     * @throws \Exception
      *
      * @see https://developer.github.com/v3/orgs/outside_collaborators/#convert-member-to-outside-collaborator
      */

@@ -14,8 +14,6 @@ class Client
      * List all codes of conduct.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listAllCodesOfConduct()
     {
@@ -26,8 +24,6 @@ class Client
      * Get an individual code of conduct.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getCodeOfConduct(string $key)
     {
@@ -36,8 +32,6 @@ class Client
 
     /**
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getRepositoryCodeOfConduct(string $repo_full_name)
     {
@@ -48,8 +42,6 @@ class Client
      * Get the contents of a repository's code of conduct.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getContentsOfRepositoryCodeOfConduct(string $repo_full_name)
     {
@@ -63,8 +55,6 @@ class Client
      *
      * @return mixed
      *
-     * @throws \Exception
-     *
      * @see https://developer.github.com/v3/emojis/
      */
     public function getEmojis()
@@ -76,8 +66,6 @@ class Client
      * Listing available templates.
      *
      * @see https://developer.github.com/v3/gitignore/
-     *
-     * @throws \Exception
      */
     public function listGitignore()
     {
@@ -88,8 +76,6 @@ class Client
      * Get a single template.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getGitignore(string $name = 'C')
     {
@@ -100,8 +86,6 @@ class Client
      * List all licenses.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listLicenses()
     {
@@ -112,8 +96,6 @@ class Client
      * Get an individual license.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getLicense(string $name = 'mit')
     {
@@ -124,8 +106,6 @@ class Client
      * Get the contents of a repository's license.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getContentsOfRepositoryLicense(string $repo_full_name)
     {
@@ -139,8 +119,6 @@ class Client
      * @param string $context gfm only
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function RenderMarkdown(string $text, string $context, string $mode = 'markdown')
     {
@@ -157,8 +135,6 @@ class Client
      * Render a Markdown document in raw mode.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function RenderMarkdownRaw(string $content, string $content_type = 'text/plain')
     {
@@ -169,8 +145,6 @@ class Client
      * meta.
      *
      * @return mixed
-     *
-     * @throws \Exception
      *
      * @see https://developer.github.com/v3/meta/
      */
@@ -183,8 +157,6 @@ class Client
      * Get your current rate limit status.
      *
      * @return mixed
-     *
-     * @throws \Exception
      *
      * @see https://developer.github.com/v3/rate_limit/
      */

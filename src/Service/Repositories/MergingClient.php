@@ -17,8 +17,6 @@ class MergingClient
      *
      * @return mixed
      *
-     * @throws \Exception
-     *
      * @see https://developer.github.com/v3/repos/merging/#perform-a-merge
      */
     public function merge(string $repo_full_name, string $base, string $head, string $commit_message)

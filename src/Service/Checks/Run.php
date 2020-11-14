@@ -15,9 +15,7 @@ use PCIT\Framework\Support\Date;
 class Run
 {
     protected $header = [
-        'Accept' => 'application/vnd.github.antiope-preview+json;
-             application/vnd.github.machine-man-preview+json;
-             application/vnd.github.speedy-preview+json',
+        'Accept' => 'application/vnd.github.antiope-preview+json,application/vnd.github.machine-man-preview+json,application/vnd.github.speedy-preview+json',
     ];
 
     /**
@@ -36,8 +34,6 @@ class Run
 
     /**
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function create(RunData $run_data)
     {
@@ -77,8 +73,6 @@ class Run
 
     /**
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function update(RunData $run_data)
     {
@@ -126,15 +120,14 @@ class Run
      *                           the most recent check runs) or all. Default: latest
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function listSpecificRef(string $repo_full_name,
-                                    string $ref,
-                                    string $check_name,
-                                    string $status,
-                                    string $filter)
-    {
+    public function listSpecificRef(
+        string $repo_full_name,
+        string $ref,
+        ?string $check_name = null,
+        ?string $status = null,
+        ?string $filter = null
+    ) {
         $url = $this->api_url.'/repos/'.$repo_full_name.'/commits/'.$ref.'/check-runs';
 
         $data = [
@@ -158,15 +151,14 @@ class Run
      *                           the most recent check runs) or all. Default: latest
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function listCheckSuite(string $repo_full_name,
-                                   int $id,
-                                   string $check_name,
-                                   string $status,
-                                   string $filter)
-    {
+    public function listCheckSuite(
+        string $repo_full_name,
+        int $id,
+        ?string $check_name = null,
+        ?string $status = null,
+        ?string $filter = null
+    ) {
         $url = $this->api_url.'/repos/'.$repo_full_name.'/check-suites/'.$id.'/check-rus';
 
         $data = [
@@ -184,8 +176,6 @@ class Run
      * Get a single check run.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getSingle(string $repo_full_name, int $check_run_id)
     {
@@ -198,8 +188,6 @@ class Run
      * List annotations for a check run.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listAnnotations(string $repo_full_name, int $check_run_id)
     {

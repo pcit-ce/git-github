@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace PCIT\GitHub\Tests\Service\Users;
 
-use PCIT\Framework\Support\Env;
 use Tests\TestCase;
 
 class ClientTest extends TestCase
 {
     /**
      * @group dont-test
-     *
-     * @throws \Exception
      */
     public function testAuthorizations(): void
     {

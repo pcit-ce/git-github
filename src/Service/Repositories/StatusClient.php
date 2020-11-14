@@ -30,12 +30,12 @@ class StatusClient
 
     /**
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(string $username, string $repo, string $ref)
     {
-        $url = implode('/', [
+        $url = implode(
+            '/',
+            [
                 $this->api_url, 'repos', $username, $repo, 'commits', $ref, 'statuses',
             ]
         );
@@ -45,18 +45,19 @@ class StatusClient
 
     /**
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function create(string $username,
-                           string $repo,
-                           string $commit_sha,
-                           string $state = 'pending',
-                           string $target_url = 'https://ci.khs1994.com',
-                           string $context = 'continuous-integration/ci.khs1994.com/push',
-                           string $description = 'The analysis or builds is pending'
+    public function create(
+        string $username,
+        string $repo,
+        string $commit_sha,
+        string $state = 'pending',
+        string $target_url = 'https://ci.khs1994.com',
+        string $context = 'continuous-integration/ci.khs1994.com/push',
+        string $description = 'The analysis or builds is pending'
     ) {
-        $url = implode('/', [
+        $url = implode(
+            '/',
+            [
                 $this->api_url, 'repos', $username, $repo, 'statuses', $commit_sha,
             ]
         );
@@ -87,12 +88,12 @@ class StatusClient
      * @param $ref
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listCombinedStatus($username, $repo, $ref)
     {
-        $url = implode('/', [
+        $url = implode(
+            '/',
+            [
                 $this->api_url, 'repos', $username, $repo, 'commits', $ref, 'status',
             ]
         );

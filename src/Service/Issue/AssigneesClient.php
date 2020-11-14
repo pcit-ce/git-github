@@ -19,9 +19,7 @@ class AssigneesClient
     private $api_url;
 
     private $header = [
-        'Accept' => 'application/vnd.github.machine-man-preview+json;
-        application/vnd.github.speedy-preview+json;
-        application/vnd.github.symmetra-preview+json',
+        'Accept' => 'application/vnd.github.machine-man-preview+json,application/vnd.github.speedy-preview+json,application/vnd.github.symmetra-preview+json',
     ];
 
     /**
@@ -38,8 +36,6 @@ class AssigneesClient
      * List assignees.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(string $repo_full_name)
     {
@@ -54,8 +50,6 @@ class AssigneesClient
      * 204 404.
      *
      * @return bool
-     *
-     * @throws \Exception
      */
     public function check(string $repo_full_name, string $assignees)
     {
@@ -74,8 +68,6 @@ class AssigneesClient
      * Add assignees to an issue.
      *
      * 201
-     *
-     * @throws \Exception
      */
     public function add(string $repo_full_name, int $issue_number, array $assignees): void
     {
@@ -94,8 +86,6 @@ class AssigneesClient
 
     /**
      * Remove assignees from an issue.
-     *
-     * @throws \Exception
      */
     public function remove(string $repo_full_name, int $issue_number, array $assignees): void
     {

@@ -14,8 +14,6 @@ class WebhooksClient
      * List hooks.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(string $org_name)
     {
@@ -26,8 +24,6 @@ class WebhooksClient
      * Get single hook.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function get(string $org_name, int $hook_id)
     {
@@ -40,18 +36,17 @@ class WebhooksClient
      * 201
      *
      * @param string $content_type json or form
-     *
-     * @throws \Exception
      */
-    public function create(string $org_name,
-                           string $hook_name,
-                           array $events,
-                           string $url,
-                           string $secret,
-                           string $content_type = 'json',
-                           string $insecure_ssl = '0',
-                           bool $active = true): void
-    {
+    public function create(
+        string $org_name,
+        string $hook_name,
+        array $events,
+        string $url,
+        string $secret,
+        string $content_type = 'json',
+        string $insecure_ssl = '0',
+        bool $active = true
+    ): void {
         $data = [
             'name' => $hook_name,
             'active' => $active,
@@ -69,18 +64,17 @@ class WebhooksClient
 
     /**
      * Edit a hook.
-     *
-     * @throws \Exception
      */
-    public function edit(string $org_name,
-                         int $hook_id,
-                         array $events,
-                         string $url,
-                         string $secret,
-                         string $content_type = 'json',
-                         string $insecure_ssl = '0',
-                         bool $active = true): void
-    {
+    public function edit(
+        string $org_name,
+        int $hook_id,
+        array $events,
+        string $url,
+        string $secret,
+        string $content_type = 'json',
+        string $insecure_ssl = '0',
+        bool $active = true
+    ): void {
         $data = [
             'active' => $active,
             'events' => $events,
@@ -99,8 +93,6 @@ class WebhooksClient
      * Ping a hook.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function ping(string $org_name, int $hook_id): void
     {
@@ -109,8 +101,6 @@ class WebhooksClient
 
     /**
      * Delete a hook.
-     *
-     * @throws \Exception
      */
     public function delete(string $org_name, string $hook_id): void
     {

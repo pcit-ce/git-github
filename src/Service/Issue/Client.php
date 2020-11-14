@@ -11,20 +11,8 @@ use TencentAI\TencentAI;
 
 class Client extends ClientCommon implements ClientInterface
 {
-    /**
-     * @var Curl
-     */
-    protected $curl;
-
-    /**
-     * @var string
-     */
-    protected $api_url;
-
     private $header = [
-        'Accept' => 'application/vnd.github.machine-man-preview+json;
-        application/vnd.github.speedy-preview+json;
-        application/vnd.github.symmetra-preview+json',
+        'Accept' => 'application/vnd.github.machine-man-preview+json,application/vnd.github.speedy-preview+json,application/vnd.github.symmetra-preview+json',
     ];
 
     /**
@@ -44,8 +32,6 @@ class Client extends ClientCommon implements ClientInterface
     /**
      * List all issues assigned to the authenticated user across all visible repositories including owned repositories,
      * member repositories, and organization repositories:.
-     *
-     * @throws \Exception
      */
     public function list()
     {
@@ -66,9 +52,9 @@ class Client extends ClientCommon implements ClientInterface
      *
      * 201
      *
-     * @return mixed
+     * @param mixed $issue_number
      *
-     * @throws \Exception
+     * @return mixed
      */
     public function getSingle(string $repo_full_name, $issue_number)
     {
@@ -82,20 +68,23 @@ class Client extends ClientCommon implements ClientInterface
      *
      * @param array $labels
      * @param array $assignees
-     *
-     * @throws \Exception
      */
-    public function create(string $repo_full_name,
-                           string $title,
-                           string $body,
-                           int $milestone,
-                           array $labels = null,
-                           array $assignees = null): void
-    {
+    public function create(
+        string $repo_full_name,
+        string $title,
+        string $body,
+        int $milestone,
+        array $labels = null,
+        array $assignees = null
+    ): void {
         $url = $this->api_url.'/repos/'.$repo_full_name.'/issues';
 
         $this->curl->post($url, json_encode(array_filter(compact(
-            'title', 'body', 'milestone', 'labels', 'assignees'
+            'title',
+            'body',
+            'milestone',
+            'labels',
+            'assignees'
         ))), $this->header);
 
         $this->successOrFailure(201, true);
@@ -111,24 +100,29 @@ class Client extends ClientCommon implements ClientInterface
      * @param int    $milestone
      * @param array  $labels
      * @param array  $assignees
+     * @param mixed  $issue_number
      *
      * @see https://developer.github.com/v3/issues/#edit-an-issue
-     *
-     * @throws \Exception
      */
-    public function edit(string $repo_full_name,
-                         $issue_number,
-                         string $title = null,
-                         string $body = null,
-                         string $state = null,
-                         int $milestone = null,
-                         array $labels = null,
-                         array $assignees = null): void
-    {
+    public function edit(
+        string $repo_full_name,
+        $issue_number,
+        string $title = null,
+        string $body = null,
+        string $state = null,
+        int $milestone = null,
+        array $labels = null,
+        array $assignees = null
+    ): void {
         $url = $this->api_url.'/repos/'.$repo_full_name.'/issues/'.$issue_number;
 
         $this->curl->patch($url, json_encode(array_filter(compact(
-            'title', 'body', 'state', 'milestone', 'labels', 'assignees'
+            'title',
+            'body',
+            'state',
+            'milestone',
+            'labels',
+            'assignees'
         ))), $this->header);
 
         $this->successOrFailure(200, true);
@@ -139,10 +133,9 @@ class Client extends ClientCommon implements ClientInterface
      *
      * 204.
      *
-     * @param string $lock_reason The reason for locking the issue or pull request conversation. Lock will fail if
-     *                            you don't use one of these reasons: off-topic too heated resolved spam
-     *
-     * @throws \Exception
+     * @param string $lock_reason  The reason for locking the issue or pull request conversation. Lock will fail if
+     *                             you don't use one of these reasons: off-topic too heated resolved spam
+     * @param mixed  $issue_number
      */
     public function lock(string $repo_full_name, $issue_number, string $lock_reason = null): void
     {
@@ -153,15 +146,17 @@ class Client extends ClientCommon implements ClientInterface
                 'locked' => true,
                 'active_lock_reason' => $lock_reason,
             ];
-            $this->curl->put($url, json_encode($data),
-                ['Accept' => 'application/vnd.github.machine-man-preview+json;
-                application/vnd.github.speedy-preview+json;
-                application/vnd.github.sailor-v-preview+json']);
+            $this->curl->put(
+                $url,
+                json_encode($data),
+                ['Accept' => 'application/vnd.github.machine-man-preview+json,application/vnd.github.speedy-preview+json,application/vnd.github.sailor-v-preview+json']
+            );
         } else {
-            $this->curl->put($url, null,
-                ['Accept' => 'application/vnd.github.machine-man-preview+json;
-                application/vnd.github.speedy-preview+json;
-                application/vnd.github.sailor-v-preview+json']);
+            $this->curl->put(
+                $url,
+                null,
+                ['Accept' => 'application/vnd.github.machine-man-preview+json,application/vnd.github.speedy-preview+json,application/vnd.github.sailor-v-preview+json']
+            );
         }
 
         $this->successOrFailure(204, true);
@@ -170,7 +165,7 @@ class Client extends ClientCommon implements ClientInterface
     /**
      * Unlock an issue.
      *
-     * @throws \Exception
+     * @param mixed $issue_number
      */
     public function unlock(string $repo_full_name, $issue_number): void
     {
@@ -182,17 +177,15 @@ class Client extends ClientCommon implements ClientInterface
     }
 
     /**
-     * @return mixed
+     * @param mixed $issue_number
      *
-     * @throws \Exception
+     * @return mixed
      */
     public function timeline(string $repo_full_name, $issue_number)
     {
         $url = $this->api_url.'/repos/'.$repo_full_name.'/issues/'.$issue_number.'/timeline';
 
-        return $this->curl->get($url, [], ['Accept' => 'application/vnd.github.machine-man-preview+json;
-        application/vnd.github.speedy-preview+json;
-        application/vnd.github.mockingbird-preview+json']);
+        return $this->curl->get($url, [], ['Accept' => 'application/vnd.github.machine-man-preview+json,application/vnd.github.speedy-preview+json,application/vnd.github.mockingbird-preview+json']);
     }
 
     /**
@@ -202,8 +195,6 @@ class Client extends ClientCommon implements ClientInterface
      * @param $rid
      * @param $repo_full_name
      * @param $issue_number
-     *
-     * @throws \Exception
      */
     public function translateTitle(
         string $repo_full_name,

@@ -19,9 +19,7 @@ class Client
     private $is_update;
 
     private $header = [
-        'Accept' => 'application/vnd.github.machine-man-preview+json;
-        application/vnd.github.speedy-preview+json;
-        application/vnd.github.symmetra-preview+json',
+        'Accept' => 'application/vnd.github.machine-man-preview+json,application/vnd.github.speedy-preview+json,application/vnd.github.symmetra-preview+json',
     ];
 
     /**
@@ -34,17 +32,16 @@ class Client
      *                          created or sort is not specified, otherwise asc.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function list(string $username,
-                         string $repo_name,
-                         string $state = null,
-                         string $head = null,
-                         string $base = null,
-                         string $sort = null,
-                         string $direction = null)
-    {
+    public function list(
+        string $username,
+        string $repo_name,
+        string $state = null,
+        string $head = null,
+        string $base = null,
+        string $sort = null,
+        string $direction = null
+    ) {
         $url = $this->api_url.implode('/', ['/repos', $username, $repo_name, 'pulls']);
 
         $data = [
@@ -62,8 +59,6 @@ class Client
      * Get a single pull request.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function get(string $username, string $repo_name, int $pr_num)
     {
@@ -76,18 +71,17 @@ class Client
      * @param string $body
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function create(string $username,
-                           string $repo_name,
-                           int $from_issue,
-                           string $title,
-                           string $head,
-                           string $base,
-                           string $body = null,
-                           bool $maintainer_can_modify = true)
-    {
+    public function create(
+        string $username,
+        string $repo_name,
+        int $from_issue,
+        string $title,
+        string $head,
+        string $base,
+        string $body = null,
+        bool $maintainer_can_modify = true
+    ) {
         $url = $this->api_url.implode('/', ['/repos', $username, $repo_name, '/pulls']);
 
         $data = [
@@ -114,18 +108,17 @@ class Client
 
     /**
      * @return mixed
-     *
-     * @throws \Exception
      */
-    public function update(string $username,
-                           string $repo_name,
-                           int $from_issue,
-                           string $title,
-                           string $head,
-                           string $base,
-                           string $body = null,
-                           bool $maintainer_can_modify = true)
-    {
+    public function update(
+        string $username,
+        string $repo_name,
+        int $from_issue,
+        string $title,
+        string $head,
+        string $base,
+        string $body = null,
+        bool $maintainer_can_modify = true
+    ) {
         $this->is_update = true;
         $output = $this->create(...\func_get_args());
         $this->is_update = false;
@@ -135,8 +128,6 @@ class Client
 
     /**
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listCommits(string $username, string $repo_name, int $pr_num)
     {
@@ -149,8 +140,6 @@ class Client
      * List pull requests files.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listFiles(string $username, string $repo_name, int $pr_num)
     {
@@ -165,8 +154,6 @@ class Client
      * @param $pr_num
      *
      * @return bool
-     *
-     * @throws \Exception
      */
     public function isMerged(string $username, string $repo_name, $pr_num)
     {
@@ -178,7 +165,8 @@ class Client
 
         if (204 === $http_return_code) {
             return true;
-        } elseif (404 === $http_return_code) {
+        }
+        if (404 === $http_return_code) {
             return false;
         }
 
@@ -189,17 +177,16 @@ class Client
      * @param int $merge_method 1:merge 2:squash 3:rebase
      *
      * @return bool|mixed
-     *
-     * @throws \Exception
      */
-    public function merge(string $username,
-                          string $repo_name,
-                          int $pr_num,
-                          ?string $commit_title = null,
-                          ?string $commit_message = null,
-                          ?string $sha = null,
-                          int $merge_method = 1)
-    {
+    public function merge(
+        string $username,
+        string $repo_name,
+        int $pr_num,
+        ?string $commit_title = null,
+        ?string $commit_message = null,
+        ?string $sha = null,
+        int $merge_method = 1
+    ) {
         switch ($merge_method) {
             case 1:
                 $merge_method = 'merge';
@@ -249,8 +236,6 @@ class Client
      * List reviews on a pull request.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listReviews(string $repo_full_name, int $pull_number)
     {
@@ -261,8 +246,6 @@ class Client
      * Get a single review.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getReview(string $repo_full_name, int $pull_number, int $review_id)
     {
@@ -271,8 +254,6 @@ class Client
 
     /**
      * Delete a pending review.
-     *
-     * @throws \Exception
      */
     public function deletePendingReview(string $repo_full_name, int $pull_number, int $review_id): void
     {
@@ -283,8 +264,6 @@ class Client
      * Get comments for a single review.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getCommentsForReview(string $repo_full_name, int $pull_number, int $review_id)
     {
@@ -295,8 +274,6 @@ class Client
      * Create a pull request review.
      *
      * @param array $comments [ 'path'=>$path,'position'=>$position,'body'=>$comments_body ]
-     *
-     * @throws \Exception
      */
     public function createReview(string $repo_full_name, int $pull_number, string $commit_id, string $body, string $event, array $comments): void
     {
@@ -312,8 +289,6 @@ class Client
 
     /**
      * Submit a pull request review.
-     *
-     * @throws \Exception
      */
     public function submitReview(string $repo_full_name, int $pull_number, int $review_id, string $body, string $event): void
     {
@@ -327,12 +302,13 @@ class Client
 
     /**
      * Dismiss a pull request review.
-     *
-     * @throws \Exception
      */
     public function dismissReview(string $repo_full_name, int $pull_number, int $review_id, string $message): void
     {
-        $this->curl->put($this->api_url.'/repos/'.$repo_full_name.'/pulls/'.$pull_number.'/reviews/'.$review_id.'/dismissals', json_encode([
+        $this->curl->put(
+            $this->api_url.'/repos/'.$repo_full_name.'/pulls/'.$pull_number.'/reviews/'.$review_id.'/dismissals',
+            json_encode(
+                [
                     'message' => $message,
                 ]
             )
@@ -348,12 +324,12 @@ class Client
      * @param string $since
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listComments(string $repo_full_name, int $pull_number, string $sort, ?string $direction, ?string $since)
     {
-        return $this->curl->get($this->api_url.'/repos/'.$repo_full_name.'/pulls/'.$pull_number.'/comments?'.http_build_query([
+        return $this->curl->get(
+            $this->api_url.'/repos/'.$repo_full_name.'/pulls/'.$pull_number.'/comments?'.http_build_query(
+                [
                     'sort' => $sort,
                     'direction' => $direction,
                     'since' => $since,
@@ -370,12 +346,12 @@ class Client
      * @param string $direction      asc or desc
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function ListCommentsInRepository(string $repo_full_name, string $sort, string $direction, string $since)
     {
-        return $this->curl->get($this->api_url.'/repos/'.$repo_full_name.'/pulls/comments?'.http_build_query([
+        return $this->curl->get(
+            $this->api_url.'/repos/'.$repo_full_name.'/pulls/comments?'.http_build_query(
+                [
                     'sort' => $sort,
                     'direction' => $direction,
                     'since' => $since,
@@ -388,8 +364,6 @@ class Client
      * Get a single comment.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getComment(string $repo_full_name, int $comment_id)
     {
@@ -398,17 +372,16 @@ class Client
 
     /**
      * Create a comment.
-     *
-     * @throws \Exception
      */
-    public function createComment(string $repo_full_name,
-                                  int $pull_number,
-                                  string $body,
-                                  string $commit_id,
-                                  string $path,
-                                  string $position,
-                                  ?int $in_reply_to): void
-    {
+    public function createComment(
+        string $repo_full_name,
+        int $pull_number,
+        string $body,
+        string $commit_id,
+        string $path,
+        string $position,
+        ?int $in_reply_to
+    ): void {
         $data = [
             'body' => $body,
             'commit_id' => $commit_id,
@@ -422,12 +395,12 @@ class Client
 
     /**
      * Edit a comment.
-     *
-     * @throws \Exception
      */
     public function editComment(string $repo_full_name, int $comment_id, string $body): void
     {
-        $this->curl->patch($this->api_url.'/repos/'.$repo_full_name.'/pulls/comments/'.$comment_id, [
+        $this->curl->patch(
+            $this->api_url.'/repos/'.$repo_full_name.'/pulls/comments/'.$comment_id,
+            [
                 'body' => $body,
             ]
         );
@@ -437,8 +410,6 @@ class Client
      * Delete a comment.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function deleteComment(string $repo_full_name, int $comment_id): void
     {
@@ -447,8 +418,6 @@ class Client
 
     /**
      * List review requests.
-     *
-     * @throws \Exception
      */
     public function listReviewRequests(string $repo_full_name, int $pull_number): void
     {
@@ -457,8 +426,6 @@ class Client
 
     /**
      * Create a review request.
-     *
-     * @throws \Exception
      */
     public function createReviewRequest(string $repo_full_name, int $pull_number, array $reviewers, array $team_reviewers): void
     {
@@ -472,8 +439,6 @@ class Client
 
     /**
      * Delete a review request.
-     *
-     * @throws \Exception
      */
     public function deleteReviewRequest(string $repo_full_name, int $pull_number, array $reviewers, array $team_reviewers): void
     {

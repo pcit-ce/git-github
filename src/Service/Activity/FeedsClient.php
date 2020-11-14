@@ -15,8 +15,6 @@ class FeedsClient
      *
      * @return mixed
      *
-     * @throws \Exception
-     *
      * @see https://developer.github.com/v3/activity/feeds/#list-feeds
      */
     public function list()

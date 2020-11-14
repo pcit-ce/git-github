@@ -14,8 +14,6 @@ class MilestonesClient
      * List milestones for a repository.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(string $repo_full_name)
     {
@@ -26,8 +24,6 @@ class MilestonesClient
      * Get a single milestone.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function get(string $repo_full_name, string $milestone_number)
     {
@@ -43,36 +39,40 @@ class MilestonesClient
      * @param string $state          open or closed
      * @param string $description
      * @param string $due_on
-     *
-     * @throws \Exception
      */
     public function create(string $repo_full_name, string $title, ?string $description, ?string $due_on, string $state = 'open'): void
     {
-        $this->curl->post($this->api_url.'/repos/'.$repo_full_name.'/milestones',
+        $this->curl->post(
+            $this->api_url.'/repos/'.$repo_full_name.'/milestones',
             json_encode(array_filter(compact(
-                'title', 'state', 'description', 'due_on'))));
+                'title',
+                'state',
+                'description',
+                'due_on'
+            )))
+        );
     }
 
     /**
      * Update a milestone.
-     *
-     * @throws \Exception
      */
     public function update(string $repo_full_name, int $milestone_number, string $title, ?string $description, ?string $due_on, string $state = 'open'): void
     {
         $this->curl->patch(
             $this->api_url.'/repos/'.$repo_full_name.'/milestones/'.$milestone_number,
             json_encode(array_filter(compact(
-                'title', 'state', 'description', 'due_on'
-            ))));
+                'title',
+                'state',
+                'description',
+                'due_on'
+            )))
+        );
     }
 
     /**
      * Delete a milestone.
      *
      * 204
-     *
-     * @throws \Exception
      */
     public function delete(string $repo_full_name, int $milestone_number): void
     {

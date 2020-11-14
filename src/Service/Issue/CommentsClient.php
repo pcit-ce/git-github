@@ -11,13 +11,6 @@ use PCIT\GitHub\Service\ClientCommon;
 class CommentsClient extends ClientCommon
 {
     /**
-     * @var Curl
-     */
-    protected $curl;
-
-    protected $api_url;
-
-    /**
      * @var \TencentAI\TencentAI
      */
     private $tencent_ai;
@@ -36,14 +29,15 @@ class CommentsClient extends ClientCommon
      *
      * 201
      *
-     * @return mixed
+     * @param mixed $issue_number
      *
-     * @throws \Exception
+     * @return mixed
      */
-    public function create(string $repo_full_name,
-                           $issue_number,
-                           string $body)
-    {
+    public function create(
+        string $repo_full_name,
+        $issue_number,
+        string $body
+    ) {
         $url = $this->api_url.'/repos/'.$repo_full_name.'/issues/'.$issue_number.'/comments';
 
         $output = $this->curl->post($url, json_encode(compact('body')));
@@ -57,8 +51,6 @@ class CommentsClient extends ClientCommon
      * List comments on an issue.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function list(string $repo_full_name, int $issue_number)
     {
@@ -71,8 +63,6 @@ class CommentsClient extends ClientCommon
      * List comments in a repository.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function listInRepository(string $repo_full_name)
     {
@@ -85,8 +75,6 @@ class CommentsClient extends ClientCommon
      * Get a single comment.
      *
      * @return mixed
-     *
-     * @throws \Exception
      */
     public function getSingle(string $repo_full_name, int $comment_id)
     {
@@ -97,8 +85,6 @@ class CommentsClient extends ClientCommon
 
     /**
      * Edit a comment.
-     *
-     * @throws \Exception
      */
     public function edit(string $repo_full_name, int $comment_id, string $body): void
     {
@@ -113,8 +99,6 @@ class CommentsClient extends ClientCommon
      * Delete a comment.
      *
      * 204.
-     *
-     * @throws \Exception
      */
     public function delete(string $repo_full_name, int $comment_id): void
     {
